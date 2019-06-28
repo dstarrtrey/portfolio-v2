@@ -88,6 +88,9 @@
 		background: transparent;
 		border-radius: _size(border-radius);
 		border: solid _size(border-width) _palette(border);
+		&.input-error {
+			border: solid _size(border-width) #f54242;
+		}
 		color: inherit;
 		display: block;
 		outline: 0;
@@ -103,6 +106,10 @@
 			background: _palette(border-bg);
 			border-color: _palette(fg-bold);
 			box-shadow: 0 0 0 _size(border-width) _palette(fg-bold);
+			&.input-error {
+				border: solid _size(border-width) #f54242;
+				box-shadow: 0 0 0 _size(border-width) #f54242;
+			}
 		}
 	}
 

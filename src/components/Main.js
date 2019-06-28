@@ -6,7 +6,7 @@ import foodQImage from '../images/food-q.png';
 import chess from '../images/chess.gif';
 import kcrmccoy from '../images/kcrmccoy.gif';
 import dinnerAndAShow from '../images/dinner-and-a-show.gif';
-import sendNewEmail from '../email-req';
+import sendNewEmail, { validateEmail, validateTextExists } from '../email-req';
 
 const Download = styled.p`
   text-align: center;
@@ -98,7 +98,10 @@ class Main extends React.Component {
     index: 0,
     name: '',
     email: '',
-    message: ''
+    message: '',
+    emailValid: true,
+    nameValid: true,
+    messageValid: true
   }
 
   nextImage = dir => {
@@ -117,17 +120,58 @@ class Main extends React.Component {
   sendEmail = event => {
     event.preventDefault();
     const {name, email, message} = this.state;
-    const data = {name, email, message};
-    console.log('input:', data);
-    const url = `https://portfolio-emailer.herokuapp.com/email`;
-    sendNewEmail(url, data).then(data => {
-      console.log('output:', data);
-    });
+    if (validateEmail(email) && validateTextExists(name) && validateTextExists(message)) {
+      const data = {name, email, message};
+      console.log('input:', data);
+      const url = `https://portfolio-emailer.herokuapp.com/email`;
+      sendNewEmail(url, data)
+
+      this.setState({
+        name: '',
+        email: '',
+        message: '',
+        emailValid: true,
+        nameValid: true,
+        messageValid: true
+      });
+    } else {
+      if (!validateEmail(email)) {
+        this.setState({ emailValid: false });
+      }
+      if (!validateTextExists(name)) {
+        this.setState({ nameValid: false });
+      }
+      if (!validateTextExists(message)) {
+        this.setState({ messageValid: false });
+      }
+    }
   }
 
   handleChange = event => {
     const { name, value } = event.target;
+    const isValid = name + 'Valid';
     this.setState({[name]: value});
+    if (!this.state[isValid]) {
+      switch (name) {
+        case 'name':
+          if (validateTextExists(value)) {
+            this.setState({ nameValid: true });
+          }
+          break;
+        case 'email':
+            if (validateEmail(value)) {
+              this.setState({ emailValid: true });
+            }
+          break;
+        case 'message':
+          if (validateTextExists(value)) {
+            this.setState({ messageValid: true });
+          }
+          break;
+        default: 
+          return;
+      }
+    }
   }
 
   render() {
@@ -230,15 +274,18 @@ class Main extends React.Component {
           <form onSubmit={this.sendEmail}>
             <div className="field half first">
               <label htmlFor="name">Name</label>
-              <input type="text" name="name" id="name" onChange={this.handleChange}  />
+              <input className={this.state.nameValid ? '' : 'input-error'} type="text" name="name" value={this.state.name} id="name" onChange={this.handleChange}  />
+              {this.state.nameValid || <small>Please enter a name.</small>}
             </div>
             <div className="field half">
               <label htmlFor="email">Email</label>
-              <input type="text" name="email" id="email" onChange={this.handleChange}  />
+              <input className={this.state.emailValid ? '' : 'input-error'} type="text" name="email" value={this.state.email} id="email" onChange={this.handleChange}  />
+              {this.state.emailValid || <small>Please enter a valid email.</small>}
             </div>
             <div className="field">
               <label htmlFor="message">Message</label>
-              <textarea name="message" id="message" rows="4" onChange={this.handleChange}></textarea>
+              <textarea className={this.state.messageValid ? '' : 'input-error'} name="message" id="message" value={this.state.message} rows="4" onChange={this.handleChange}></textarea>
+              {this.state.messageValid || <small>Please enter a message.</small>}
             </div>
             <ul className="actions">
               <li><input type="submit" value="Send Message" className="special" /></li>
