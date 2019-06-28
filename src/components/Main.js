@@ -169,7 +169,7 @@ class Main extends React.Component {
             </div>
           </PortfolioItem>
           <PortfolioItem>
-            <span className="port-heading"><h3>2 Player Online Chess</h3> — <a href="http://github.com/dstarrtrey/Chess-Board-2Player">GitHub</a> | <a href="/Chess-Board-2Player">Demo</a></span>
+            <span className="port-heading"><h3>2 Player Online Chess</h3> — <a href="http://github.com/dstarrtrey/Chess-Board-2Player">GitHub</a> | <a href="http://dstarrtrey.github.io/Chess-Board-2Player">Demo</a></span>
             <div className="image-container">
               <img src={chess} alt="2 Player Online Chess Game"/>
               <div>
@@ -220,7 +220,7 @@ class Main extends React.Component {
             </div>
           </PortfolioItem>
           <PortfolioItem>
-            <h3 className="smaller port-heading align-center">You can find many more projects on my <a href="/legacy-portfolio">complete portfolio</a> or my <a href="http://www.github.com/dstarrtrey">GitHub</a>.</h3>
+            <h3 className="smaller port-heading align-center">You can find many more projects on my <a href="http://dstarrtrey.github.io/portfolio">complete portfolio</a> or my <a href="http://www.github.com/dstarrtrey">GitHub</a>.</h3>
           </PortfolioItem>
           {close}
         </article>
