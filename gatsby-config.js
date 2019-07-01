@@ -9,11 +9,11 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: 'gatsby-starter-default',
-        short_name: 'starter',
+        name: 'David Starr Portfolio',
+        short_name: 'David Starr',
         start_url: '/',
-        background_color: '#663399',
-        theme_color: '#663399',
+        background_color: '#FFF',
+        theme_color: '#FFF',
         display: 'minimal-ui',
         icon: 'src/images/ds-logo.svg', // This path is relative to the root of the site.
       },
