@@ -129,7 +129,6 @@ class Main extends React.Component {
     emailValid: true,
     nameValid: true,
     messageValid: true,
-    success: false,
     error: false,
     loading: false
   }
@@ -156,12 +155,13 @@ class Main extends React.Component {
       this.setState({ loading: true })
       sendNewEmail(url, data).then(data => {
         if (data instanceof Error) {
+          this.props.setSuccess(true);
           this.setState({
             error: true,
-            success: true,
             loading: false
           });
         } else {
+          this.props.setSuccess(true);
           this.setState({
             name: '',
             email: '',
@@ -169,7 +169,6 @@ class Main extends React.Component {
             emailValid: true,
             nameValid: true,
             messageValid: true,
-            success: true,
             error: false,
             loading: false
           });
@@ -217,7 +216,16 @@ class Main extends React.Component {
 
   render() {
 
-    let close = <div className="close" onClick={() => {this.props.onCloseArticle()}}></div>
+    let close = <div className="close" onClick={() => {
+      if (this.props.success || this.state.loading) {
+        this.setState({
+          error: false,
+          loading: false,
+        });
+        this.props.setSuccess(false);
+      }
+      this.props.onCloseArticle()
+      }}></div>
 
     return (
       <div ref={this.props.setWrapperRef} id="main" style={this.props.timeout ? {display: 'flex'} : {display: 'none'}}>
@@ -230,11 +238,11 @@ class Main extends React.Component {
             <span onClick={() => this.nextImage('right')}>&rsaquo;</span>
           </Carousel>
           <h3 className="align-center">I am David Starr.</h3>
-          <p>I have ridden a bike across Europe, Been in the opening act for a <a href="https://www.nicoandvinz.com/">Nico & Vinz</a> concert (in a <a href="http://walkitoff.bandcamp.com/">pop punk band</a>), fallen in love, and become enamored with web development—in that chronological order.</p>
+          <p>I have ridden a bike across Europe, been in the opening act for a <a href="https://www.nicoandvinz.com/">Nico & Vinz</a> concert (in a <a href="http://walkitoff.bandcamp.com/">pop punk band</a>), fallen in love, and become enamored with web development—in that chronological order.</p>
           <h4>I like to have fun with what I do.</h4>
           <p>Whether I'm writing music or code, I am challenging myself to improve at every opportunity. Whether it's an unfamiliar library or a ridiculous time change (drummers love me), I find enjoyment in a challenge and overcoming it.</p>
           <h4>I am a self-starter.</h4>
-          <p>I inadvertantly started coding in 2014 for a school project in Python. I gradually started learning C++ as well—and decided neither were totally for me. I was very excited to start developing websites, and JavaScript was very intuitive to start with as I could see exactly what I was doing. Eventually it became clear that I could get a lot from a boot camp. I relocated to California, and learned what it takes to be a Web Developer. I began freelancing for a couple local businesses, and am also open to opportunities. Feel free to reach out! <span role="img" aria-label="boy smiling">👦</span></p>
+          <p>I inadvertantly started coding in 2014. I was very excited to start developing websites, and JavaScript was very intuitive to start with as I could see exactly what I was doing. Eventually it became clear that I could get a lot from a boot camp. I relocated to California, and learned what it takes to be a Web Developer. I began freelancing for a couple local businesses, and am also open to opportunities. Feel free to reach out! <span role="img" aria-label="boy smiling">👦</span></p>
           {close}
         </article>
 
@@ -314,7 +322,7 @@ class Main extends React.Component {
           <LoadingOverlay
             active={this.state.loading}
             spinner
-            text='Sending...'
+            text='Sending... (This may take a few seconds as it spins up the email server)'
           >
             <h2 className="major">Contact</h2>
             <form onSubmit={this.sendEmail} disabled={this.state.loading}>
@@ -343,7 +351,7 @@ class Main extends React.Component {
               <li><a href="http://www.instagram.com/flavorxdave" className="icon fa-instagram"><span className="label">Instagram</span></a></li>
               <li><a href="http://www.github.com/dstarrtrey" className="icon fa-github"><span className="label">GitHub</span></a></li>
               <li><a href="http://www.twitter.com/whoisdavidstarr" className="icon fa-twitter"><span className="label">Twitter</span></a></li>
-              { this.state.success
+              { this.props.success
                 ? !this.state.error 
                   ? <MsgSubmit>Message successfully sent! I look forward to getting back to you.</MsgSubmit> 
                   : <MsgSubmit error>
@@ -367,6 +375,8 @@ Main.propTypes = {
   article: PropTypes.string,
   articleTimeout: PropTypes.bool,
   onCloseArticle: PropTypes.func,
+  success: PropTypes.bool,
+  toggleSuccess: PropTypes.func,
   timeout: PropTypes.bool,
   setWrapperRef: PropTypes.func.isRequired,
 }

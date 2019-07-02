@@ -13,7 +13,8 @@ class IndexPage extends React.Component {
       timeout: false,
       articleTimeout: false,
       article: '',
-      loading: 'is-loading'
+      loading: 'is-loading',
+      success: false
     }
     this.handleOpenArticle = this.handleOpenArticle.bind(this)
     this.handleCloseArticle = this.handleCloseArticle.bind(this)
@@ -84,6 +85,7 @@ class IndexPage extends React.Component {
   handleClickOutside(event) {
     if (this.wrapperRef && !this.wrapperRef.contains(event.target)) {
       if (this.state.isArticleVisible) {
+        this.setState({ success: !this.state.success })
         this.handleCloseArticle();
       }
     }
@@ -102,6 +104,8 @@ class IndexPage extends React.Component {
               article={this.state.article}
               onCloseArticle={this.handleCloseArticle}
               setWrapperRef={this.setWrapperRef}
+              success={this.state.success}
+              setSuccess={success => this.setState({ success })}
             />
             <Footer timeout={this.state.timeout} />
           </div>
