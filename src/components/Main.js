@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import LoadingOverlay from 'react-loading-overlay';
 import { images } from '../images.json';
 import foodQImage from '../images/food-q.png';
 import chess from '../images/chess.gif';
@@ -130,6 +131,7 @@ class Main extends React.Component {
     messageValid: true,
     success: false,
     error: false,
+    loading: false
   }
 
   nextImage = dir => {
@@ -151,12 +153,13 @@ class Main extends React.Component {
     if (validateEmail(email) && validateTextExists(name) && validateTextExists(message)) {
       const data = {name, email, message};
       const url = `https://portfolio-emailer.herokuapp.com/email`;
+      this.setState({ loading: true })
       sendNewEmail(url, data).then(data => {
         if (data instanceof Error) {
-          console.log('Error!!')
           this.setState({
             error: true,
-            success: true
+            success: true,
+            loading: false
           });
         } else {
           this.setState({
@@ -167,7 +170,8 @@ class Main extends React.Component {
             nameValid: true,
             messageValid: true,
             success: true,
-            error: false
+            error: false,
+            loading: false
           });
         }
       });
@@ -307,43 +311,49 @@ class Main extends React.Component {
         </article>
 
         <article id="contact" className={`${this.props.article === 'contact' ? 'active' : ''} ${this.props.articleTimeout ? 'timeout' : ''}`} style={{display:'none'}}>
-          <h2 className="major">Contact</h2>
-          <form onSubmit={this.sendEmail}>
-            <div className="field half first">
-              <label htmlFor="name">Name</label>
-              <input className={this.state.nameValid ? '' : 'input-error'} type="text" name="name" value={this.state.name} id="name" onChange={this.handleChange}  />
-              {this.state.nameValid || <small>Please enter a name.</small>}
-            </div>
-            <div className="field half">
-              <label htmlFor="email">Email</label>
-              <input className={this.state.emailValid ? '' : 'input-error'} type="text" name="email" value={this.state.email} id="email" onChange={this.handleChange}  />
-              {this.state.emailValid || <small>Please enter a valid email.</small>}
-            </div>
-            <div className="field">
-              <label htmlFor="message">Message</label>
-              <textarea className={this.state.messageValid ? '' : 'input-error'} name="message" id="message" value={this.state.message} rows="4" onChange={this.handleChange}></textarea>
-              {this.state.messageValid || <small>Please enter a message.</small>}
-            </div>
-            <ul className="actions">
-              <li><input type="submit" value="Send Message" className="special" /></li>
-              <li><input type="reset" value="Reset" /></li>
+          <LoadingOverlay
+            active={this.state.loading}
+            spinner
+            text='Sending...'
+          >
+            <h2 className="major">Contact</h2>
+            <form onSubmit={this.sendEmail} disabled={this.state.loading}>
+              <div className="field half first">
+                <label htmlFor="name">Name</label>
+                <input className={this.state.nameValid ? '' : 'input-error'} type="text" name="name" value={this.state.name} id="name" onChange={this.handleChange}  />
+                {this.state.nameValid || <small>Please enter a name.</small>}
+              </div>
+              <div className="field half">
+                <label htmlFor="email">Email</label>
+                <input className={this.state.emailValid ? '' : 'input-error'} type="text" name="email" value={this.state.email} id="email" onChange={this.handleChange}  />
+                {this.state.emailValid || <small>Please enter a valid email.</small>}
+              </div>
+              <div className="field">
+                <label htmlFor="message">Message</label>
+                <textarea className={this.state.messageValid ? '' : 'input-error'} name="message" id="message" value={this.state.message} rows="4" onChange={this.handleChange}></textarea>
+                {this.state.messageValid || <small>Please enter a message.</small>}
+              </div>
+              <ul className="actions">
+                <li><input type="submit" value="Send Message" className="special" /></li>
+                <li><input type="reset" value="Reset" /></li>
+              </ul>
+            </form>
+            <ul className="icons">
+              <li><a href="http://www.linkedin.com/in/david-l-starr" className="icon fa-linkedin"><span className="label">LinkedIn</span></a></li>
+              <li><a href="http://www.instagram.com/flavorxdave" className="icon fa-instagram"><span className="label">Instagram</span></a></li>
+              <li><a href="http://www.github.com/dstarrtrey" className="icon fa-github"><span className="label">GitHub</span></a></li>
+              <li><a href="http://www.twitter.com/whoisdavidstarr" className="icon fa-twitter"><span className="label">Twitter</span></a></li>
+              { this.state.success
+                ? !this.state.error 
+                  ? <MsgSubmit>Message successfully sent! I look forward to getting back to you.</MsgSubmit> 
+                  : <MsgSubmit error>
+                      <small>An error has occurred. Please email david@davidstarr.me</small>
+                      <small>(feel free to add that this form is BROKEN)</small>
+                    </MsgSubmit>
+                : null
+              }
             </ul>
-          </form>
-          <ul className="icons">
-            <li><a href="http://www.linkedin.com/in/david-l-starr" className="icon fa-linkedin"><span className="label">LinkedIn</span></a></li>
-            <li><a href="http://www.instagram.com/flavorxdave" className="icon fa-instagram"><span className="label">Instagram</span></a></li>
-            <li><a href="http://www.github.com/dstarrtrey" className="icon fa-github"><span className="label">GitHub</span></a></li>
-            <li><a href="http://www.twitter.com/whoisdavidstarr" className="icon fa-twitter"><span className="label">Twitter</span></a></li>
-            { this.state.success
-              ? !this.state.error 
-                ? <MsgSubmit>Message successfully sent! I look forward to getting back to you.</MsgSubmit> 
-                : <MsgSubmit error>
-                    <small>An error has occurred. Please email david@davidstarr.me</small>
-                    <small>(feel free to add that this form is BROKEN)</small>
-                  </MsgSubmit>
-              : null
-            }
-          </ul>
+          </LoadingOverlay> 
           {close}
         </article>
 
